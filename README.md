@@ -79,17 +79,17 @@ Suggestions and improvements are welcome. For larger changes, consider opening a
 No license has been specified yet. Unless a license is added, others should not assume they have permission to reuse, modify, or distribute this project's code.
 
 
+
 ## 📸 Project Screenshots
 
 ### Dashboard
-![Dashboard](screenshots/01-dashboard.png)
+![Dashboard](./Screebshots/dashboard.png)
 
 ### Learning Roadmap
-![Learning Roadmap](screenshots/02-roadmap.png)
+![Learning Roadmap](./Screebshots/roadmap.png)
 
 ### Progress Tracking
-![Progress Tracking](screenshots/03-progress.png)
+![Progress Tracking](./Screebshots/progress.png)
 
 ### Search Functionality
-![Search Functionality](screenshots/04-search.png)
-
+![Search Functionality](./Screebshots/search.png)
