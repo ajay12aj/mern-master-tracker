@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A practical basic-to-advanced MERN Stack development checklist and progress tracker." />
+  <title>MERN Stack Mastery Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div>
+        <p class="eyebrow">LEARN · BUILD · MASTER</p>
+        <h1>MERN Stack Mastery Tracker</h1>
+        <p class="subtitle">A practical roadmap from web fundamentals to production-ready full-stack applications.</p>
+      </div>
+      <div class="header-actions">
+        <button id="exportBtn" class="button button-secondary" type="button">Export progress</button>
+        <label class="button button-secondary file-button" for="importFile">Import backup</label>
+        <input id="importFile" type="file" accept="application/json,.json" hidden />
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <section class="overview panel" aria-labelledby="overviewTitle">
+      <div class="overview-top">
+        <div>
+          <p class="section-kicker">YOUR LEARNING JOURNEY</p>
+          <h2 id="overviewTitle">Overall progress</h2>
+        </div>
+        <div class="overall-number"><span id="overallPercent">0%</span><small>completed</small></div>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Overall learning progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="overallProgressBar">
+        <div class="progress-fill" id="overallProgressFill"></div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat"><strong id="completedCount">0</strong><span>Skills completed</span></div>
+        <div class="stat"><strong id="remainingCount">0</strong><span>Skills remaining</span></div>
+        <div class="stat"><strong id="completedModules">0 / 14</strong><span>Modules completed</span></div>
+        <div class="stat"><strong id="projectCount">0 / 5</strong><span>Projects completed</span></div>
+      </div>
+      <p class="tip"><strong>Mastery rule:</strong> Tick a skill only when you can explain it and implement it without copying a tutorial. Revisit it later if you cannot reproduce it.</p>
+    </section>
+
+    <section class="toolbar panel" aria-label="Checklist controls">
+      <div class="search-wrap">
+        <label for="searchInput">Search skills</label>
+        <input id="searchInput" type="search" placeholder="Search e.g. JWT, useEffect, aggregation..." autocomplete="off" />
+      </div>
+      <div class="filter-wrap">
+        <span class="control-label">Show</span>
+        <div class="filter-buttons" role="group" aria-label="Filter skills">
+          <button class="filter-button active" data-filter="all" type="button">All</button>
+          <button class="filter-button" data-filter="pending" type="button">Remaining</button>
+          <button class="filter-button" data-filter="completed" type="button">Completed</button>
+        </div>
+      </div>
+      <button id="resetBtn" class="button button-danger" type="button">Reset progress</button>
+    </section>
+
+    <section class="roadmap-heading">
+      <div>
+        <p class="section-kicker">THE ROADMAP</p>
+        <h2>Skills checklist</h2>
+        <p class="muted">Follow the modules in order. Each checkbox is saved automatically in this browser.</p>
+      </div>
+      <div class="legend"><span class="legend-dot done-dot"></span> Completed <span class="legend-dot todo-dot"></span> Not completed</div>
+    </section>
+
+    <div id="modulesContainer" class="modules-list"></div>
+
+    <section class="resources panel" id="resources">
+      <div class="resources-heading">
+        <div>
+          <p class="section-kicker">STUDY MATERIAL</p>
+          <h2>Video & documentation references</h2>
+          <p class="muted">Use these as learning references, not as a substitute for independent practice.</p>
+        </div>
+      </div>
+      <div id="resourcesContainer" class="resource-grid"></div>
+    </section>
+
+    <section class="finish panel">
+      <h2>When can you call yourself MERN-ready?</h2>
+      <p>You should be able to start with an empty project folder, plan the database, build the React interface, write and secure the APIs, connect MongoDB, test the important flows, deploy the application, and debug problems without following a step-by-step tutorial.</p>
+      <p class="muted small">This tracker covers a broad practical skill set. Software development keeps changing, so continue using official documentation and building projects after completing it.</p>
+    </section>
+
+    <footer class="footer">
+      <span>MERN Stack Mastery Tracker</span>
+      <span>Your progress is stored locally in this browser.</span>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
