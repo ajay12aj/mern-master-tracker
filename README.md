@@ -77,3 +77,19 @@ Suggestions and improvements are welcome. For larger changes, consider opening a
 ## License
 
 No license has been specified yet. Unless a license is added, others should not assume they have permission to reuse, modify, or distribute this project's code.
+
+
+## 📸 Project Screenshots
+
+### Dashboard
+![Dashboard](screenshots/01-dashboard.png)
+
+### Learning Roadmap
+![Learning Roadmap](screenshots/02-roadmap.png)
+
+### Progress Tracking
+![Progress Tracking](screenshots/03-progress.png)
+
+### Search Functionality
+![Search Functionality](screenshots/04-search.png)
+
