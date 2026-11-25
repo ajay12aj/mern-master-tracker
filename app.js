@@ -486,39 +486,71 @@ function escapeHTML(value) {
   })[character]);
 }
 
+
 function renderModules() {
   const container = document.getElementById("modulesContainer");
   const matchingModules = [];
 
   modules.forEach((module, moduleIndex) => {
-    const visibleTasks = module.tasks.map((task, taskIndex) => ({
-      task,
-      taskIndex,
-      id: taskId(moduleIndex, taskIndex),
-      done: Boolean(progress.completed[taskId(moduleIndex, taskIndex)])
-    })).filter(item => {
-      const matchesSearch = !searchTerm || `${item.task[0]} ${item.task[1]} ${module.title}`.toLowerCase().includes(searchTerm);
-      const matchesFilter = currentFilter === "all" || (currentFilter === "completed" ? item.done : !item.done);
+    const visibleTasks = module.tasks.map((task, taskIndex) => {
+      const id = taskId(moduleIndex, taskIndex);
+
+      return {
+        task,
+        taskIndex,
+        id,
+        done: Boolean(progress.completed[id])
+      };
+    }).filter(item => {
+      const matchesSearch =
+        !searchTerm ||
+        `${item.task[0]} ${item.task[1]} ${module.title}`
+          .toLowerCase()
+          .includes(searchTerm);
+
+      const matchesFilter =
+        currentFilter === "all" ||
+        (currentFilter === "completed" ? item.done : !item.done);
+
       return matchesSearch && matchesFilter;
     });
 
     if (!visibleTasks.length) return;
+
     matchingModules.push({ module, moduleIndex, visibleTasks });
   });
 
   if (!matchingModules.length) {
-    container.innerHTML = '<div class="no-results">No skills match your search/filter. Try another keyword or select “All”.</div>';
+    container.innerHTML =
+      '<div class="no-results">No skills match your search/filter. Try another keyword or select “All”.</div>';
     return;
   }
 
-  container.innerHTML = matchingModules.map(({ module, moduleIndex, visibleTasks }) => {
+  container.innerHTML = matchingModules.map(({
+    module,
+    moduleIndex,
+    visibleTasks
+  }) => {
     const total = module.tasks.length;
-    const done = module.tasks.reduce((count, task, taskIndex) => count + (progress.completed[taskId(moduleIndex, taskIndex)] ? 1 : 0), 0);
+
+    const done = module.tasks.reduce((count, task, taskIndex) => {
+      return count + (
+        progress.completed[taskId(moduleIndex, taskIndex)] ? 1 : 0
+      );
+    }, 0);
+
     const percent = Math.round((done / total) * 100);
-    const isOpen = searchTerm || currentFilter !== "all" ? "open" : "";
+    const isOpen =
+      searchTerm || currentFilter !== "all" ? "open" : "";
+
     const tasksHTML = visibleTasks.map(({ task, id, done: isDone }) => `
       <label class="task-item ${isDone ? "is-done" : ""}" for="${id}">
-        <input id="${id}" type="checkbox" data-task-id="${id}" ${isDone ? "checked" : ""} />
+        <input
+          id="${id}"
+          type="checkbox"
+          data-task-id="${id}"
+          ${isDone ? "checked" : ""}
+        />
         <span class="task-copy">
           <span class="task-title">${escapeHTML(task[0])}</span>
           <span class="task-detail">${escapeHTML(task[1])}</span>
@@ -530,35 +562,100 @@ function renderModules() {
       <details class="module" ${isOpen}>
         <summary>
           <span class="module-number">${String(moduleIndex + 1).padStart(2, "0")}</span>
+
           <span class="module-title-wrap">
             <span class="module-title">${escapeHTML(module.title)}</span>
             <span class="module-description">${escapeHTML(module.description)}</span>
           </span>
+
           <span class="module-progress-wrap">
             <span class="module-progress-text">${done}/${total}</span>
-            <span class="mini-track"><span class="mini-fill" style="display:block;width:${percent}%"></span></span>
+            <span class="mini-track">
+              <span class="mini-fill" style="display:block;width:${percent}%"></span>
+            </span>
           </span>
         </summary>
+
         <div class="module-body">
-          <p class="module-hint"><strong>Practice challenge:</strong> ${escapeHTML(module.hint.replace("Build challenge: ", ""))}</p>
+          <p class="module-hint">
+            <strong>Practice challenge:</strong>
+            ${escapeHTML(module.hint.replace("Build challenge: ", ""))}
+          </p>
+
           <div class="task-list">${tasksHTML}</div>
         </div>
       </details>
     `;
   }).join("");
 
+  // Handle task completion without rendering the entire checklist again
   container.querySelectorAll("[data-task-id]").forEach(input => {
     input.addEventListener("change", event => {
-      const id = event.currentTarget.dataset.taskId;
-      const isChecked = event.currentTarget.checked;
-      if (isChecked) progress.completed[id] = true;
-      else delete progress.completed[id];
+      const checkbox = event.currentTarget;
+      const id = checkbox.dataset.taskId;
+      const isChecked = checkbox.checked;
+
+      if (isChecked) {
+        progress.completed[id] = true;
+      } else {
+        delete progress.completed[id];
+      }
+
+      // Update clicked task only
+      const taskItem = checkbox.closest(".task-item");
+
+      if (taskItem) {
+        taskItem.classList.toggle("is-done", isChecked);
+      }
+
+      // Save progress and update overall dashboard
       saveProgress();
-      renderModules();
-      showToast(isChecked ? "Skill marked complete." : "Skill moved back to remaining.");
+
+      // Update individual module progress
+      const moduleElement = checkbox.closest(".module");
+
+      if (moduleElement) {
+        const summary = moduleElement.querySelector("summary");
+        const moduleNumber = Number(
+          summary.querySelector(".module-number").textContent
+        );
+
+        const currentModule = modules[moduleNumber - 1];
+
+        if (currentModule) {
+          const completedCount = currentModule.tasks.reduce(
+            (count, task, index) => {
+              return count + (
+                progress.completed[taskId(moduleNumber - 1, index)]
+                  ? 1
+                  : 0
+              );
+            },
+            0
+          );
+
+          const totalCount = currentModule.tasks.length;
+          const percentage = Math.round(
+            (completedCount / totalCount) * 100
+          );
+
+          summary.querySelector(".module-progress-text").textContent =
+            `${completedCount}/${totalCount}`;
+
+          summary.querySelector(".mini-fill").style.width =
+            `${percentage}%`;
+        }
+      }
+
+      showToast(
+        isChecked
+          ? "Skill marked complete."
+          : "Skill moved back to remaining."
+      );
     });
   });
 }
+
 
 function updateOverview() {
   const totalTasks = modules.reduce((sum, module) => sum + module.tasks.length, 0);
